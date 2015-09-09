@@ -1,0 +1,20 @@
+{
+  "name": "hyperionscreen",
+  "version": "0.0.1",
+  "description": "Hyperion client screen capture and photo",
+  "keywords": [
+    "hyperion",
+    "screen capture"
+  ],
+  "authors": [
+    "Eric Le Lay <eric.lelay@gmail.com>"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/ellisium/HyperionScreen.git"
+  },
+  "dependencies":{
+      "lwip"             :"0.0.7"
+  }
+}
