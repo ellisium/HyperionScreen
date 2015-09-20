@@ -2,9 +2,7 @@ var net = require('net'),
 settings= require(__dirname+'\\settings.json'),
 child = require('child_process'),
 fs=require('fs'),
-lwip= require('lwip'),
-dgram = require('dgram'),
-server = dgram.createSocket('udp4');
+lwip= require('lwip');
 
 var __client={
 	recordOn:function(){
@@ -129,22 +127,7 @@ var __client={
 		self.ffmpeg.close(function(){
 
 		});
-	},
-	udp:function(){
-		var self=this;
-		server.on('listening', function () {
-		    var address = server.address();
-		    console.log('UDP Server listening on ' + address.address + ":" + address.port);
-		});
-
-		server.on('message', function (message, remote) {
-		    console.log(remote.address + ':' + remote.port +' - ' + message);
-
-		});
-
-		server.bind(settings.udp.port, settings.udp.host);
 	}
 }
 __client.clientConnect(function(){});
-__client.udp();
 __client.ffmpegOn();
