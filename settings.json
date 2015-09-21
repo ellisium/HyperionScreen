@@ -1,8 +1,7 @@
 {
 	"port":19444,
 	"host":"192.168.1.103",
-	"udp":{
-		"port":33333,
-		"host":"127.0.0.1"
-	}
+	"frames":30,
+	"grabWidth":100,
+	"grabHeight":57
 }

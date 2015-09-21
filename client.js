@@ -1,8 +1,7 @@
 var net = require('net'),
 settings= require(__dirname+'\\settings.json'),
 child = require('child_process'),
-fs=require('fs'),
-lwip= require('lwip');
+fs=require('fs');
 
 var __client={
 	recordOn:function(){
@@ -23,7 +22,7 @@ var __client={
 	clientData:function(){
 		var self=this;
 		self.client.on('data',function(data){
-			console.log('data:'+data);
+			//console.log('data:'+data);
 		});
 	},
 	clientError:function(){
@@ -40,20 +39,6 @@ var __client={
 			callback();
 		})
 	},
-	clientMode:function(mode, src){
-		var self=this;
-		switch(mode){
-			case 'img':
-				lwip.open(src,function(e, data){
-					var w=data.width(),
-					h=data.height();
-	  				self.setImage(self.processImage(data, w, h), w, h, 50, -1)
-	  			});
-			break;
-			case 'video':
-			break;
-		}
-	},
 	clientWrite:function(cmd, callback){
 		var self=this;
 		var data=null;
@@ -66,52 +51,42 @@ var __client={
 	},
 	setImage:function(data, width, height, priority, duration){
 		var self=this;
-		var binary=new Buffer(self.processImage(data, width, height), 'binary').toString('base64'),
-		cmd = {
-            command: 'image',
-            imagewidth: width,
-            imageheight:height,
-            imagedata :binary,
-        	priority:50
-        };
+		cmd = '{"command": "image","imagewidth": '+width+',"imageheight":'+height+',"imagedata":"'+data.toString('base64')+'","priority":0}';
         if (duration && duration > 0) cmd.duration = duration * 1000;
-        console.log('b')
         self.clientWrite(cmd,function(){})
-	},
-	processImage:function(data, width, height){
-		var binaryImage= [];
-		for (var i = 0; i < width; ++i)
-		{
-			for (var j = 0; j < height; ++j)
-			{
-				var rgb=data.getPixel(i,j);
-				binaryImage.push(rgb.r);
-				binaryImage.push(rgb.g);
-				binaryImage.push(rgb.b);
-			}
-		}
-		return binaryImage;
 	},
 	ffmpegOn:function(log){
 		var self=this;
+		var nBytes=settings.grabWidth*settings.grabHeight*3,
+		countBytes=0,
+		arrBytes=[];
 		self.ffmpeg = child.spawn("ffmpeg", [
-		  '-f',
-		  'dshow',
-		  '-i',
-		  'video=screen-capture-recorder',
-		  '-f',
-		  'h264',
-		  '-vcodec',
-		  'libx264',
-		  '-qp',
-		  '0',
-		  'udp:'+settings.udp.host+':'+settings.udp.port
+		 	'-f',
+		 	'dshow',
+		 	'-i',
+		 	'video=screen-capture-recorder',
+		 	'-vf',
+		 	'scale='+settings.grabWidth+':'+settings.grabHeight,
+			'-f', 
+			'image2pipe',
+            '-pix_fmt', 
+            'rgb24',
+            '-vcodec',
+            'rawvideo',
+            '-'
 		]);
+		self.ffmpeg.stdout.on('data', function (data) {
+			for(var i=0; i<data.length; i++){
+				countBytes+=1;
+				arrBytes.push(data[i]);
+				if(countBytes==nBytes){
+					self.setImage(new Buffer(arrBytes), settings.grabWidth, settings.grabHeight, 0, 0);
+					arrBytes=[];
+					countBytes=0;
+				}
+			}
+		});
 		if(log){
-			self.ffmpeg.stdout.on('data', function (data) {
-			  console.log('stdout: ' + data);
-			});
-
 			self.ffmpeg.stderr.on('data', function (data) {
 			  console.log('stderr: ' + data);
 			});
@@ -129,5 +104,9 @@ var __client={
 		});
 	}
 }
-__client.clientConnect(function(){});
-__client.ffmpegOn();
+if(process.argv[2]==='dev'){
+	__client.clientConnect(function(){
+		__client.ffmpegOn();	
+	});
+}
+
