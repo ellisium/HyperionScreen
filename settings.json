@@ -1,7 +1,8 @@
 {
 	"port":19444,
 	"host":"192.168.1.103",
-	"frames":30,
+	"frameRate":30,
 	"grabWidth":100,
-	"grabHeight":57
+	"grabHeight":57,
+	"cpu":8
 }

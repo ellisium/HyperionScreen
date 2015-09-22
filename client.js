@@ -1,4 +1,5 @@
 var net = require('net'),
+os=require('os'),
 settings= require(__dirname+'\\settings.json'),
 child = require('child_process'),
 fs=require('fs');
@@ -10,11 +11,11 @@ var __client={
 	recordOff:function(){
 
 	},
-	clientConnect : function(callback){
+	clientConnect : function(log, callback){
 		var self= this;
 		self.client=net.connect({port: settings.port, host:settings.host}, function() { 
   			console.log('connected to server!');
-  			self.clientData();
+  			if(log)self.clientData();
   			self.clientError();
   			callback()
   		});
@@ -22,7 +23,7 @@ var __client={
 	clientData:function(){
 		var self=this;
 		self.client.on('data',function(data){
-			//console.log('data:'+data);
+			console.log('data:'+data);
 		});
 	},
 	clientError:function(){
@@ -61,12 +62,16 @@ var __client={
 		countBytes=0,
 		arrBytes=[];
 		self.ffmpeg = child.spawn("ffmpeg", [
+			'-threads',
+			''+(settings.cpu)?settings.cpu:os.cpus().length+'',
 		 	'-f',
 		 	'dshow',
 		 	'-i',
 		 	'video=screen-capture-recorder',
 		 	'-vf',
 		 	'scale='+settings.grabWidth+':'+settings.grabHeight,
+		 	'-r',
+		 	''+settings.frameRate+'',
 			'-f', 
 			'image2pipe',
             '-pix_fmt', 
@@ -76,24 +81,22 @@ var __client={
             '-'
 		]);
 		self.ffmpeg.stdout.on('data', function (data) {
-			for(var i=0; i<data.length; i++){
-				countBytes+=1;
-				arrBytes.push(data[i]);
-				if(countBytes==nBytes){
-					self.setImage(new Buffer(arrBytes), settings.grabWidth, settings.grabHeight, 0, 0);
-					arrBytes=[];
-					countBytes=0;
-				}
+			countBytes+=data.length;
+			arrBytes.push(data);
+			if(countBytes>=nBytes){
+				var frame = Buffer.concat(arrBytes).slice(0, nBytes);
+				arrBytes=[frame.slice(nBytes-1,arrBytes.length)];
+				countBytes=arrBytes[0].length;
+				self.setImage(frame, settings.grabWidth, settings.grabHeight, 0, 0);
 			}
 		});
+		self.ffmpeg.on('close', function (code) {
+			console.log('child process exited with code ' + code);
+		});	
 		if(log){
 			self.ffmpeg.stderr.on('data', function (data) {
 			  console.log('stderr: ' + data);
 			});
-
-			self.ffmpeg.on('close', function (code) {
-			  console.log('child process exited with code ' + code);
-			});	
 		}
 		return self;
 	},
@@ -105,8 +108,8 @@ var __client={
 	}
 }
 if(process.argv[2]==='dev'){
-	__client.clientConnect(function(){
-		__client.ffmpegOn();	
+	__client.clientConnect(false, function(){
+		__client.ffmpegOn(true);	
 	});
 }
 
