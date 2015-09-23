@@ -13,5 +13,8 @@
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/ellisium/HyperionScreen.git"
+  },
+  "dependencies":{
+      "socket.io"     :"1.3.6"
   }
 }
