@@ -5,5 +5,5 @@
 	"frameRate":30,
 	"grabWidth":100,
 	"grabHeight":57,
-	"cpu":8
+	"cpu":4
 }

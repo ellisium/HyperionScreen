@@ -101,13 +101,14 @@ var __client={
 				console.log('stderr: ' + data);
 			});
 		});
-		return self;
+		return 'start ffmpeg grabber';
 	},
 	ffmpegOff:function(){
 		var self=this;
 		self.ffmpeg.kill('SIGINT');
 		console.log('ffmpeg capture close')
 		self.client.write('{"command": "clearall"}\n');
+		return 'stop ffmpeg grabber'
 	}
 }
 if(process.argv[2]==='dev'){
