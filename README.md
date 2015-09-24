@@ -10,7 +10,16 @@ install:
   npm install hyperionscreen
   
   
-Confirgure settings file
+Confirgure settings file "settings.json"
+
+	"port":19444,                 -> Hyperion server port
+	"host":"192.168.1.103",       -> Hyperion (or VM) adress IP
+	"hyperionScreenPort":6664,    -> websocket hyperionScreen port
+	"frameRate":30,               -> record frame rate
+	"grabWidth":100,              -> record image resize (value around your zones/led hyperion config should be ok)
+	"grabHeight":57,              
+	"cpu":1                       -> ffmpeg threads allocated (depending on your CPU cores) if value omitted, value will set maxs
+
 
 Video Demo:
 
