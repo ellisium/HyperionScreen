@@ -5,7 +5,7 @@ install:
 
   install ffmpeg
   
-  install scrreen-recorder (https://github.com/rdp/screen-capture-recorder-to-video-windows-free)
+  install screen-recorder (https://github.com/rdp/screen-capture-recorder-to-video-windows-free)
   
 Confirgure settings file
 
