@@ -7,6 +7,9 @@ install:
   
   install screen-recorder (https://github.com/rdp/screen-capture-recorder-to-video-windows-free)
   
+  npm install hyperionscreen
+  
+  
 Confirgure settings file
 
 Video Demo:
