@@ -105,10 +105,12 @@ var __client={
 	},
 	ffmpegOff:function(){
 		var self=this;
-		self.ffmpeg.kill('SIGINT');
-		console.log('ffmpeg capture close')
-		self.client.write('{"command": "clearall"}\n');
-		return 'stop ffmpeg grabber'
+		try{
+			self.ffmpeg.kill('SIGINT');
+			console.log('ffmpeg capture close')
+			self.client.write('{"command": "clearall"}\n');
+			return 'stop ffmpeg grabber';
+		}catch(e){console.log(e)}
 	}
 }
 if(process.argv[2]==='dev'){
