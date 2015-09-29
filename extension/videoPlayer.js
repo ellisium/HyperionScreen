@@ -55,12 +55,16 @@ $( document ).ready(function() {
 		},1000);
 		
 		function fireEvents(){
-			$(video).on('play', function(){
-				hyperion(false);
-			})
-			$(video).on('ended', function(){
-				hyperion(true);
-			})
+			$(video)
+				.on('play', function(){
+					hyperion(false);
+				})
+				.on('ended', function(){
+					hyperion(true);
+				});
+			$(window).bind('beforeunload', function() {
+		    	hyperion(true);
+		    }); 
 		}
 	});
 });
