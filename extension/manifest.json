@@ -1,0 +1,21 @@
+{
+	"manifest_version": 2,
+	"name" :"hyperionScreen",
+	"version" :"1.0",
+	"description":"Switch On/Off hyperionScreen client (ambilight system)",
+  	"content_scripts": [
+	    {
+	      "matches": ["http://www.netflix.com/*"],
+	      "js": ["jquery-2.1.4.min.js", "socket.io.js", "videoPlayer.js"]
+	    }
+    ],
+    "web_accessible_resources": [
+    	"settings.json"
+    ],
+	"browser_action" :
+		{
+			"default_title": "ambilight switch",
+			"default_icon" : "icon.png",
+			"default_popup" :"popup.html"
+		}
+}
