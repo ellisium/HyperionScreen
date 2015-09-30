@@ -105,12 +105,10 @@ var __client={
 	},
 	ffmpegOff:function(){
 		var self=this;
-		try{
-			self.ffmpeg.kill('SIGINT');
-			console.log('ffmpeg capture close')
-			self.client.write('{"command": "clearall"}\n');
-			return 'stop ffmpeg grabber';
-		}catch(e){console.log(e)}
+		if(self.ffmpeg)self.ffmpeg.kill('SIGINT');
+		if(self.client)self.client.write('{"command": "clearall"}\n');
+		console.log('ffmpeg capture close')
+		return 'stop ffmpeg grabber';
 	}
 }
 if(process.argv[2]==='dev'){
@@ -118,6 +116,7 @@ if(process.argv[2]==='dev'){
 }
 
 //websocket
+console.log('init socket')
 var server = http.createServer(),
 io = require('socket.io').listen(server);
 
@@ -125,6 +124,7 @@ socketAdazones = io.of('/hyperionScreen');
 socketAdazones.on('connection', function (socket) {
 	console.log('Un client est connecté au websocket hyperionScreen!');
 	socket.on('hyperionCmd', function (obj, fn) {
+		console.log(obj.cmd)
 			var res=__client[obj.cmd](obj.args);
 			fn(0, res); // success
 	});

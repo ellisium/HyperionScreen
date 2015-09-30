@@ -5,8 +5,14 @@
 	"description":"Switch On/Off hyperionScreen client (ambilight system)",
   	"content_scripts": [
 	    {
-	      "matches": ["http://www.netflix.com/*"],
-	      "js": ["jquery-2.1.4.min.js", "socket.io.js", "videoPlayer.js"]
+	      "matches": ["*://*.netflix.com/*"], 
+	      "all_frames":true,
+	      "js": ["jquery-2.1.4.min.js", "socket.io.js", "netflix.js"]
+	    },
+	    {
+	      "matches": [ "*://*.www.wat.tv/*"], 
+	      "all_frames":true,
+	      "js": ["jquery-2.1.4.min.js", "socket.io.js", "wat.js"]
 	    }
     ],
     "web_accessible_resources": [
