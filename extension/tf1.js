@@ -6,32 +6,10 @@ $( document ).ready(function() {
 	adaZonesClient=null,
 	hyperionClient=null,
 	zones=null,
-	video=null,
 	index=null;
 
 	function main(){
 		url=window.location.href;		
-		var checkVideo= setInterval(function(){
-			video=$(document).find("#WATPlayerInstance")[0];
-			console.log(video)
-			if(video){   
-				fireEvents();
-				clearInterval(checkVideo);
-			}
-		},1000);
-		
-		function fireEvents(){
-			var toggle=false;
-			$(video)
-				.on('click mousedown', function(){ 
-				hyperion(toggle);
-				if(toggle===false){
-					toggle=true;
-				}else{
-					toggle=false
-				}
-			});
-		}
 		hyperion(true)
 		$(window).on('beforeunload', function() {
 		    hyperion(true);
@@ -81,8 +59,6 @@ $( document ).ready(function() {
 			hyperionReady =true;
 				console.log('chrome extension hyperionClient connected')
 		});
-
-		main();
 	});
 });
 

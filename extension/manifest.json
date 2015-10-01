@@ -13,6 +13,10 @@
 	      "matches": [ "*://*.www.wat.tv/*"], 
 	      "all_frames":true,
 	      "js": ["jquery-2.1.4.min.js", "socket.io.js", "wat.js"]
+	    },
+	    {
+	      "matches": [ "*://*.www.tf1.fr/*"], 
+	      "js": ["jquery-2.1.4.min.js", "socket.io.js", "tf1.js"]
 	    }
     ],
     "web_accessible_resources": [
